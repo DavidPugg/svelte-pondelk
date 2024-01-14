@@ -85,10 +85,10 @@
 	}
 
 	.page-container {
-		@apply mx-auto max-w-max page-paddings;
+		@apply page-paddings mx-auto max-w-max;
 	}
 
 	.heading {
-		@apply text-2xl font-bold mb-4;
+		@apply mb-4 text-2xl font-bold;
 	}
 }
