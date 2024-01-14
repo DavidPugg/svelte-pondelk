@@ -1,5 +1,5 @@
 <header
-	class="z-50 border-b-2 flex items-center h-nav font-bold fixed inset-0 bg-secondary page-paddings"
+	class="page-paddings fixed inset-0 z-50 flex h-nav items-center border-b-2 bg-secondary font-bold"
 >
 	<nav class="mx-auto min-w-max">
 		<ul>

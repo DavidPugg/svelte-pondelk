@@ -4,10 +4,10 @@
 	import Header from '../lib/components/Header.svelte';
 </script>
 
-<div class="grid grid-rows-[1fr_min-content] min-h-screen">
+<div class="grid min-h-screen grid-rows-[1fr_min-content]">
 	<Header />
 
-	<main class="mt-[calc(var(--nav-height)+2rem)] page-container min-w-full flex justify-center">
+	<main class="page-container mt-[calc(var(--nav-height)+2rem)] flex min-w-full justify-center">
 		<slot />
 	</main>
 

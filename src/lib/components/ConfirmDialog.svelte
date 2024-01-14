@@ -25,7 +25,7 @@
 			<Dialog.Description>{description}</Dialog.Description>
 		</Dialog.Header>
 		<Dialog.Footer>
-			<div class="w-full flex justify-center sm:justify-end gap-3">
+			<div class="flex w-full justify-center gap-3 sm:justify-end">
 				<DialogPrimitive.Close>
 					<Button class="w-full" variant="outline">{cancelText}</Button>
 				</DialogPrimitive.Close>
