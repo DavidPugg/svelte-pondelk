@@ -11,7 +11,7 @@
 	<meta name="description" content="Home page of Pondelk!" />
 </svelte:head>
 
-<section>
+<section class="w-full sm:w-[30rem]">
 	<h1 class="heading">Groups</h1>
 
 	{#if data?.groups}

@@ -14,9 +14,7 @@
 </script>
 
 <a href={group.joined ? '/group/{group.id}' : 'javascript:void(0)'}>
-	<Card.Root
-		class="w-[30rem] transition-all {group.joined ? 'hover:bg-secondary' : 'cursor-default'}"
-	>
+	<Card.Root class="transition-all {group.joined ? 'hover:bg-secondary' : 'cursor-default'}">
 		<Card.Header>
 			<div class="flex justify-between w-full">
 				<h2 class="font-semibold">{group.name}</h2>

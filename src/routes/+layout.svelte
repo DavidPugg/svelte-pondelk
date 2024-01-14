@@ -7,7 +7,7 @@
 <div class="grid grid-rows-[1fr_min-content] min-h-screen">
 	<Header />
 
-	<main class="mt-[calc(var(--nav-height)+2rem)] page-container">
+	<main class="mt-[calc(var(--nav-height)+2rem)] page-container min-w-full flex justify-center">
 		<slot />
 	</main>
 
