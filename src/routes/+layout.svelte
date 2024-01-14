@@ -1,13 +1,15 @@
 <script>
 	import '../app.css';
-	import Footer from './Footer.svelte';
-	import Header from './Header.svelte';
+	import Footer from '../lib/components/Footer.svelte';
+	import Header from '../lib/components/Header.svelte';
 </script>
 
-<Header />
+<div class="grid grid-rows-[1fr_min-content] min-h-screen">
+	<Header />
 
-<main>
-	<slot />
-</main>
+	<main class="mt-[calc(var(--nav-height)+2rem)] page-container">
+		<slot />
+	</main>
 
-<Footer />
+	<Footer />
+</div>
