@@ -40,7 +40,9 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"bits-ui": "^0.14.0",
 		"clsx": "^2.1.0",
+		"dayjs": "^1.11.10",
 		"radix-icons-svelte": "^1.2.1",
 		"tailwind-merge": "^2.2.0",
 		"tailwind-variants": "^0.1.20"

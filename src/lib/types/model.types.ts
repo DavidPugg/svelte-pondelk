@@ -11,6 +11,8 @@ export type Group = {
 	name: string;
 	author: User;
 	createdAt: Date;
+	joined: boolean;
+	members: number;
 };
 
 export type Event = {

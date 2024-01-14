@@ -1,17 +1,39 @@
 <script lang="ts">
 	import type { Group } from '$lib/types/model.types';
 	import * as Card from '$lib/components/ui/card';
+	import dayjs from 'dayjs';
+	import relativeTime from 'dayjs/plugin/relativeTime';
+	import { Button } from '$lib/components/ui/button';
+	dayjs.extend(relativeTime);
 
 	export let group: Group;
+
+	function requestInvite() {
+		console.log('request invite');
+	}
 </script>
 
-<a href="/group/{group.id}">
-	<Card.Root>
+<a href={group.joined ? '/group/{group.id}' : 'javascript:void(0)'}>
+	<Card.Root
+		class="w-[30rem] transition-all {group.joined ? 'hover:bg-secondary' : 'cursor-default'}"
+	>
 		<Card.Header>
-			<h2>{group.name}</h2>
+			<div class="flex justify-between w-full">
+				<h2 class="font-semibold">{group.name}</h2>
+				<div>
+					{#if group.joined}
+						<span class="text-sm text-green-500 font-bold">Joined</span>
+					{:else}
+						<Button size="sm" on:click={requestInvite}>Request invite</Button>
+					{/if}
+				</div>
+			</div>
 		</Card.Header>
 		<Card.Footer>
-			<p>{group.createdAt}</p>
+			<div class="flex justify-between w-full">
+				<p class="text-foreground/60 text-sm">{group.members} members</p>
+				<p class="text-foreground/60 text-sm">{dayjs(group.createdAt).fromNow()}</p>
+			</div>
 		</Card.Footer>
 	</Card.Root>
 </a>
