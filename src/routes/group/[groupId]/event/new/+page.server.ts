@@ -1,12 +1,12 @@
-import { redirect } from '@sveltejs/kit';
-import { DB } from '../../../../db/db';
-import { groups, memberships } from '../../../../db/schema';
+import { fail } from '@sveltejs/kit';
+import { DB } from '../../../../../db/db';
+import { events, participations } from '../../../../../db/schema';
 
 export const actions = {
-	create: async ({ request }) => {
+	create: async ({ request, params }) => {
 		const data = await request.formData();
 		const name = data.get('name')?.toString();
-		const description = data.get('description')?.toString();
+		const location = data.get('location')?.toString();
 
 		const errors: { [key: string]: string } = {};
 
@@ -14,8 +14,8 @@ export const actions = {
 			errors['name'] = 'Name is required';
 		}
 
-		if (!description) {
-			errors['description'] = 'Description is required';
+		if (!location) {
+			errors['location'] = 'location is required';
 		}
 
 		if (Object.keys(errors).length > 0) {
@@ -23,31 +23,26 @@ export const actions = {
 		}
 
 		try {
-			const [{ insertedId }] = await DB.insert(groups)
+			const [{ insertedId }] = await DB.insert(events)
 				.values({
 					name: name as string,
-					description: description as string,
-					authorId: 1, //TODO: add auth user id
+					location: location as string,
+					authorId: 1, //TODO: add auth user id,
+					groupId: +params.groupId,
 					createdAt: new Date()
 				})
-				.returning({ insertedId: groups.id });
+				.returning({ insertedId: events.id });
 
-			await DB.insert(memberships).values({
+			await DB.insert(participations).values({
 				userId: 1, //TODO: add auth user id
-				groupId: insertedId,
-				pending: false,
+				eventId: insertedId,
+				verified: true,
 				createdAt: new Date()
 			});
+
+			return { insertedId };
 		} catch (e) {
-			if (e instanceof Error) {
-				if (e.message.includes('UNIQUE constraint failed: groups.name')) {
-					errors['name'] = 'Group name already exists';
-				}
-			}
-
-			return { errors };
+			return fail(400, { errors });
 		}
-
-		return redirect(303, '/');
 	}
 };

@@ -1,4 +1,4 @@
-import { redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import { DB } from '../../../db/db';
 import { groups, memberships } from '../../../db/schema';
 
@@ -38,6 +38,8 @@ export const actions = {
 				pending: false,
 				createdAt: new Date()
 			});
+
+			return { insertedId };
 		} catch (e) {
 			if (e instanceof Error) {
 				if (e.message.includes('UNIQUE constraint failed: groups.name')) {
@@ -45,9 +47,7 @@ export const actions = {
 				}
 			}
 
-			return { errors };
+			return fail(400, { errors });
 		}
-
-		return redirect(303, '/');
 	}
 };

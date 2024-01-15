@@ -1,8 +1,11 @@
 <script>
+	import { Toaster } from 'svelte-french-toast';
 	import '../app.css';
 	import Footer from '../lib/components/Footer.svelte';
 	import Header from '../lib/components/Header.svelte';
 </script>
+
+<Toaster />
 
 <div class="grid min-h-screen grid-rows-[1fr_min-content]">
 	<Header />
