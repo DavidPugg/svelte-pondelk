@@ -61,7 +61,7 @@ export const events = sqliteTable(
 		location: text('location').notNull(),
 		authorId: integer('author_id').references(() => users.id),
 		groupId: integer('group_id')
-			.references(() => groups.id)
+			.references(() => groups.id, { onDelete: 'cascade' })
 			.notNull(),
 		createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
 	},
@@ -92,10 +92,10 @@ export const memberships = sqliteTable(
 	{
 		id: integer('id').primaryKey(),
 		userId: integer('user_id')
-			.references(() => users.id)
+			.references(() => users.id, { onDelete: 'cascade' })
 			.notNull(),
 		groupId: integer('group_id')
-			.references(() => groups.id)
+			.references(() => groups.id, { onDelete: 'cascade' })
 			.notNull(),
 		pending: integer('pending', { mode: 'boolean' }).notNull(),
 		createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
@@ -125,8 +125,8 @@ export const participations = sqliteTable(
 	'participations',
 	{
 		id: integer('id').primaryKey(),
-		userId: integer('user_id').references(() => users.id),
-		eventId: integer('event_id').references(() => events.id),
+		userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }),
+		eventId: integer('event_id').references(() => events.id, { onDelete: 'cascade' }),
 		verified: integer('verified', { mode: 'boolean' }).notNull(),
 		createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
 	},
