@@ -1,16 +1,27 @@
-import { mockEvents } from '$lib/mocks/event.mock.js';
-import { mockGroups } from '$lib/mocks/group.mock';
-import { error } from '@sveltejs/kit';
+import { error, isHttpError, type NumericRange } from '@sveltejs/kit';
+import { DB } from '../../../db/db.js';
 
 export async function load({ params }) {
-	const group = mockGroups.find((group) => group.id === params.id);
-	const events = mockEvents.filter((event) => event.group.id === params.id);
+	const { id } = params;
 
-	if (!group) {
-		return error(404, 'Group not found');
+	try {
+		const res = await DB.query.groups.findFirst({
+			where: (groups, { eq }) => eq(groups.id, +id),
+			with: {
+				events: true
+			}
+		});
+
+		if (!res) {
+			return error(404, 'Not Found');
+		}
+
+		return { group: res };
+	} catch (e) {
+		if (isHttpError(e)) {
+			return error(e.status as NumericRange<400, 599>, e.body.message);
+		}
 	}
-
-	return { group, events };
 }
 
 export const actions = {

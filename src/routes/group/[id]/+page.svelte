@@ -72,10 +72,14 @@
 
 <section class="w-full sm:w-[30rem]">
 	<ul class="flex flex-col gap-4">
-		{#each data.events as event}
-			<li>
-				<Event {event} />
-			</li>
-		{/each}
+		{#if !!data?.group?.events?.length}
+			{#each data.group.events as event}
+				<li>
+					<Event {event} />
+				</li>
+			{/each}
+		{:else}
+			<p>No events yet!</p>
+		{/if}
 	</ul>
 </section>
