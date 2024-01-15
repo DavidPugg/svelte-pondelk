@@ -23,7 +23,7 @@
 </script>
 
 <section class="w-full sm:w-[30rem]">
-	<h1 class="heading text-center">Create group</h1>
+	<h1 class="heading text-center">Create Event</h1>
 
 	<form
 		class="[&>div:not(:last-child)]:mb-3 [&>div]:flex [&>div]:flex-col [&>div]:gap-1"
@@ -40,10 +40,10 @@
 		</div>
 
 		<div>
-			<Label for="email-2">Description</Label>
-			<Input type="text" id="description" placeholder="Description" name="description" />
-			{#if form?.errors.description}
-				<p class="text-sm text-destructive">{form.errors.description}</p>
+			<Label for="email-2">Location</Label>
+			<Input type="text" id="location" placeholder="Location" name="location" />
+			{#if form?.errors.location}
+				<p class="text-sm text-destructive">{form.errors.location}</p>
 			{/if}
 		</div>
 

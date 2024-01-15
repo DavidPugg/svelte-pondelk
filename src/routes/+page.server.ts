@@ -11,8 +11,8 @@ export async function load() {
 			description: groups.description,
 			createdAt: groups.createdAt,
 			authorId: groups.authorId,
-			joined: sql`(SELECT COUNT(*) FROM memberships WHERE memberships.group_id = groups.id AND memberships.user_id = 1)`, //TODO: add auth user id
-			members: sql`COUNT(memberships.id)`
+			joined: sql<boolean>`(SELECT COUNT(*) FROM memberships WHERE memberships.group_id = groups.id AND memberships.user_id = 1)`, //TODO: add auth user id
+			members: sql<number>`COUNT(memberships.id)`
 		})
 			.from(groups)
 			.leftJoin(memberships, eq(groups.id, memberships.groupId))

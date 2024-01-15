@@ -32,6 +32,7 @@
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content class="w-56">
 				<DropdownMenu.Group>
+					<DropdownMenu.Item><a href="/event/create">Create event</a></DropdownMenu.Item>
 					<!--TODO: fix after auth is added -->
 					<DropdownMenu.Item on:click={() => (openDialog = 'leave')}>
 						<span class="text-red-500">Leave group</span>

@@ -8,7 +8,7 @@
 	export let event: Event;
 </script>
 
-<a href="/event/{event.id}">
+<a href="/group/{event.groupId}/event/{event.id}">
 	<Card.Root class="transition-all hover:bg-secondary">
 		<Card.Header>
 			<div class="flex w-full justify-between">

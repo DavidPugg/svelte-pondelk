@@ -76,25 +76,28 @@
 			</Table.Row>
 		</Table.Header>
 		<Table.Body>
-			{#each data.participations as participation, i (i)}
-				<Table.Row>
-					<Table.Cell class="font-medium">{participation.user.username}</Table.Cell>
-					{#if participation.verified}
-						<Table.Cell class="text-right font-semibold text-green-500">verified</Table.Cell>
+			{#if data.event?.participations}
+				{#each data.event.participations as participation, i (i)}
+					<Table.Row>
+						<Table.Cell class="font-medium">{participation.user?.username}</Table.Cell>
+						{#if participation.verified}
+							<Table.Cell class="text-right font-semibold text-green-500">verified</Table.Cell>
 
-						<!-- TODO: fix admin after auth -->
-					{:else if false}
-						<Table.Cell class="text-right ">
-							<form method="POST" action={`?/verify`} use:enhance>
-								<input type="text" name="id" value={participation.user.id} class="hidden" />
-								<Button type="submit" variant="outline" size="sm">Verify</Button>
-							</form>
-						</Table.Cell>
-					{:else}
-						<Table.Cell class="text-right font-semibold text-destructive">not verified</Table.Cell>
-					{/if}
-				</Table.Row>
-			{/each}
+							<!-- TODO: fix admin after auth -->
+						{:else if false}
+							<Table.Cell class="text-right ">
+								<form method="POST" action={`?/verify`} use:enhance>
+									<input type="text" name="id" value={participation.user?.id} class="hidden" />
+									<Button type="submit" variant="outline" size="sm">Verify</Button>
+								</form>
+							</Table.Cell>
+						{:else}
+							<Table.Cell class="text-right font-semibold text-destructive">not verified</Table.Cell
+							>
+						{/if}
+					</Table.Row>
+				{/each}
+			{/if}
 		</Table.Body>
 	</Table.Root>
 </section>

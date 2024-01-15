@@ -2,14 +2,10 @@ import { error, isHttpError, type NumericRange } from '@sveltejs/kit';
 import { DB } from '../../../db/db.js';
 
 export async function load({ params }) {
-	const { id } = params;
-
 	try {
 		const res = await DB.query.groups.findFirst({
-			where: (groups, { eq }) => eq(groups.id, +id),
-			with: {
-				events: true
-			}
+			where: (groups, { eq }) => eq(groups.id, +params.groupId),
+			with: { events: true }
 		});
 
 		if (!res) {
