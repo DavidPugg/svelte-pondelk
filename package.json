@@ -11,7 +11,10 @@
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
-		"test:unit": "vitest"
+		"test:unit": "vitest",
+		"generate": "drizzle-kit generate:sqlite",
+		"migrate": "drizzle-kit push:sqlite",
+		"studio": "drizzle-kit studio"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.10",
@@ -20,10 +23,12 @@
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"@types/better-sqlite3": "^7.6.8",
 		"@types/eslint": "8.56.0",
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
 		"@typescript-eslint/parser": "^6.0.0",
 		"autoprefixer": "^10.4.16",
+		"drizzle-kit": "^0.20.12",
 		"eslint": "^8.56.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.35.1",
@@ -42,9 +47,11 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"better-sqlite3": "^9.2.2",
 		"bits-ui": "^0.14.0",
 		"clsx": "^2.1.0",
 		"dayjs": "^1.11.10",
+		"drizzle-orm": "^0.29.3",
 		"radix-icons-svelte": "^1.2.1",
 		"tailwind-merge": "^2.2.0",
 		"tailwind-variants": "^0.1.20"
