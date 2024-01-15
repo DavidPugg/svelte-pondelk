@@ -49,11 +49,12 @@
 	<p class="text-sm">{data.group?.description}</p>
 
 	<form
-		use:enhance
 		method="POST"
 		action={`?/${openDialog}`}
-		on:submit|preventDefault={() => (openDialog = null)}
 		class="hidden"
+		use:enhance={() => {
+			openDialog = null;
+		}}
 	>
 		<ConfirmDialog
 			open={!!openDialog}
