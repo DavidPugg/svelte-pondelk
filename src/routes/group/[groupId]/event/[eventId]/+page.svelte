@@ -1,10 +1,13 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import { page } from '$app/stores';
 	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
+	import Spinner from '$lib/components/Spinner.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Table from '$lib/components/ui/table';
+	import { type ActionResult } from '@sveltejs/kit';
+	import toast from 'svelte-french-toast';
 	import type { PageServerData } from './$types';
 
 	export let data: PageServerData;
@@ -19,10 +22,32 @@
 		confirm: 'Delete',
 		cancel: 'Cancel'
 	};
+
+	let loading = false;
+
+	function submitParticipationForm() {
+		if (loading) return;
+		loading = true;
+
+		return async ({ result, update }: { result: ActionResult; update: () => void }) => {
+			loading = false;
+
+			if (result.type === 'success') {
+				toast.success('Successfully participated in event');
+				update();
+			}
+
+			if (result.type === 'failure') {
+				toast.error(result.data?.message);
+			}
+
+			applyAction(result);
+		};
+	}
 </script>
 
 <svelte:head>
-	<title>Event - {$page.params.id} - Pondelk!</title>
+	<title>Event - {$page.params.eventId} - Pondelk!</title>
 	<meta name="description" content="Page for event {$page.params.id}" />
 </svelte:head>
 
@@ -37,12 +62,14 @@
 			<DropdownMenu.Content class="w-56">
 				<DropdownMenu.Group>
 					<DropdownMenu.Item on:click={() => (openDialog = true)}
-						><span class="text-red-500">Delete group</span></DropdownMenu.Item
+						><span class="text-red-500">Delete event</span></DropdownMenu.Item
 					>
 				</DropdownMenu.Group>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</div>
+
+	<p class="font-semibold text-gray-500">{data.event?.location}</p>
 
 	<form
 		method="POST"
@@ -67,6 +94,15 @@
 </section>
 
 <section class="w-full sm:w-[30rem]">
+	<form method="POST" action="?/participate" use:enhance={submitParticipationForm}>
+		<Button disabled={loading} type="submit" class="mb-3 ml-auto block" variant="outline">
+			{#if loading}
+				<Spinner />
+			{/if}
+			Participate</Button
+		>
+	</form>
+
 	<Table.Root>
 		<Table.Caption>A list of the event participations.</Table.Caption>
 		<Table.Header>

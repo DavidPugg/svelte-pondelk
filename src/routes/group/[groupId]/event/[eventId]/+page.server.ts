@@ -1,5 +1,6 @@
-import { error, isHttpError, type NumericRange } from '@sveltejs/kit';
+import { error, fail, isHttpError, type NumericRange } from '@sveltejs/kit';
 import { DB } from '../../../../../db/db.js';
+import { participations } from '../../../../../db/schema.js';
 
 export async function load({ params }) {
 	try {
@@ -33,5 +34,26 @@ export const actions = {
 		const data = await request.formData();
 		const participantId = data.get('id');
 		console.log('verify', participantId);
+	},
+
+	participate: async ({ params }) => {
+		try {
+			await DB.insert(participations).values({
+				eventId: +params.eventId,
+				userId: 1, //TODO: add auth user
+				verified: false,
+				createdAt: new Date()
+			});
+
+			return { status: 'success' };
+		} catch (e) {
+			if (e instanceof Error) {
+				const message = e.message.includes('UNIQUE')
+					? 'Already participated'
+					: 'Failed to participate';
+
+				return fail(400, { message });
+			}
+		}
 	}
 };
