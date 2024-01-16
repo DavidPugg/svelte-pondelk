@@ -2,6 +2,7 @@
 	import { applyAction, enhance } from '$app/forms';
 	import Group from '$lib/components/Group.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
+	import { authData } from '$lib/stores/auth';
 	import { PAGE_TITLE } from '$lib/utils/constants';
 	import type { ActionResult } from '@sveltejs/kit';
 	import toast from 'svelte-french-toast';
@@ -46,6 +47,8 @@
 			<Button variant="outline">New Group</Button>
 		</a>
 	</div>
+
+	<h1>Welcome {$authData?.username}</h1>
 
 	{#if data?.groups}
 		<form method="POST" action="?/request" use:enhance={submitRequestForm}>

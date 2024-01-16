@@ -4,9 +4,10 @@ import { integer, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 export const users = sqliteTable(
 	'users',
 	{
-		id: integer('id').primaryKey(),
+		id: text('id').primaryKey(),
 		username: text('username').notNull(),
 		email: text('email').notNull(),
+		picture: text('picture'),
 		createdAt: integer('created_at', { mode: 'timestamp_ms' })
 			.notNull()
 			.default(sql`CURRENT_TIMESTAMP`)

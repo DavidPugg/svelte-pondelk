@@ -41,9 +41,10 @@ CREATE TABLE `participations` (
 );
 --> statement-breakpoint
 CREATE TABLE `users` (
-	`id` integer PRIMARY KEY NOT NULL,
+	`id` text PRIMARY KEY NOT NULL,
 	`username` text NOT NULL,
 	`email` text NOT NULL,
+	`picture` text,
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint

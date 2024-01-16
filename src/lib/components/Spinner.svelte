@@ -1,7 +1,19 @@
-<div role="status" class="absolute -left-8">
+<script lang="ts">
+	const sizes = {
+		sm: 'h-6 w-6',
+		md: 'h-8 w-8',
+		lg: 'h-12 w-12',
+		xl: 'h-16 w-16'
+	};
+
+	export let className = '';
+	export let size: keyof typeof sizes = 'sm';
+</script>
+
+<div role="status" class={`absolute -left-8 ${className}`}>
 	<svg
 		aria-hidden="true"
-		class="inline h-6 w-6 animate-spin fill-gray-600 text-gray-200 dark:fill-gray-300 dark:text-gray-600"
+		class={`inline  animate-spin fill-gray-600 text-gray-200 dark:fill-gray-300 dark:text-gray-600 ${sizes[size]}`}
 		viewBox="0 0 100 101"
 		fill="none"
 		xmlns="http://www.w3.org/2000/svg"
