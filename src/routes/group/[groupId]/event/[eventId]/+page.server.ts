@@ -1,4 +1,5 @@
 import { error, fail, isHttpError, type NumericRange } from '@sveltejs/kit';
+import { sql } from 'drizzle-orm';
 import { DB } from '../../../../../db/db.js';
 import { participations } from '../../../../../db/schema.js';
 
@@ -30,10 +31,38 @@ export const actions = {
 		console.log('delete');
 	},
 
-	verify: async ({ request }) => {
-		const data = await request.formData();
-		const participantId = data.get('id');
-		console.log('verify', participantId);
+	verify: async ({ request, params }) => {
+		try {
+			const data = await request.formData();
+			const participantId = data.get('id');
+			const eventId = +params.eventId;
+
+			if (!participantId) {
+				return fail(400, { message: 'Invalid participant id' });
+			}
+
+			const row = await DB.query.events.findFirst({
+				where: (events, { eq }) => eq(events.id, eventId)
+			});
+
+			//TODO: add current auth user id
+			if (row?.authorId !== 1) {
+				return fail(401, { message: 'Unauthorized' });
+			}
+
+			await DB.update(participations)
+				.set({
+					verified: true
+				})
+				.where(
+					sql`${participations.userId} = ${+participantId} AND ${participations.eventId} = ${eventId}`
+				);
+
+			return { status: 'success' };
+		} catch (e) {
+			console.log(e);
+			return fail(400, { message: 'Error verifying participation' });
+		}
 	},
 
 	participate: async ({ params }) => {
@@ -44,8 +73,6 @@ export const actions = {
 				verified: false,
 				createdAt: new Date()
 			});
-
-			return { status: 'success' };
 		} catch (e) {
 			if (e instanceof Error) {
 				const message = e.message.includes('UNIQUE')

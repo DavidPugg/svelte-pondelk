@@ -35,9 +35,20 @@
 			if (result.type === 'success') {
 				toast.success('Successfully participated in event');
 				update();
+			} else if (result.type === 'failure') {
+				toast.error(result.data?.message);
 			}
 
-			if (result.type === 'failure') {
+			applyAction(result);
+		};
+	}
+
+	function submitVerifyForm() {
+		return async ({ result, update }: { result: ActionResult; update: () => void }) => {
+			if (result.type === 'success') {
+				toast.success('Succesfully verified participation ');
+				update();
+			} else if (result.type === 'failure') {
 				toast.error(result.data?.message);
 			}
 
@@ -120,9 +131,9 @@
 							<Table.Cell class="text-right font-semibold text-green-500">verified</Table.Cell>
 
 							<!-- TODO: fix admin after auth -->
-						{:else if false}
+						{:else if true}
 							<Table.Cell class="text-right ">
-								<form method="POST" action={`?/verify`} use:enhance>
+								<form method="POST" action={`?/verify`} use:enhance={submitVerifyForm}>
 									<input type="text" name="id" value={participation.user?.id} class="hidden" />
 									<Button type="submit" variant="outline" size="sm">Verify</Button>
 								</form>
