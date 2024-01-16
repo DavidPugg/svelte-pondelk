@@ -4,7 +4,7 @@ export type User = UserDB;
 
 export type Group = GroupDB & {
 	author?: User;
-	joined?: boolean;
+	pending?: boolean | null;
 	members?: number;
 };
 

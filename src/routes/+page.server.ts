@@ -11,7 +11,10 @@ export async function load() {
 			description: groups.description,
 			createdAt: groups.createdAt,
 			authorId: groups.authorId,
-			joined: sql<boolean>`(SELECT COUNT(*) FROM memberships WHERE memberships.group_id = groups.id AND memberships.user_id = 1)`, //TODO: add auth user id
+			pending:
+				sql<boolean>`(SELECT pending FROM memberships WHERE memberships.group_id = groups.id AND memberships.user_id = 1)`.mapWith(
+					Boolean
+				), //TODO: add auth user id
 			members: sql<number>`COUNT(memberships.id)`
 		})
 			.from(groups)

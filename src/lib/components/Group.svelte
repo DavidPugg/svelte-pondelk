@@ -12,14 +12,18 @@
 	const dispatch = createEventDispatcher();
 </script>
 
-<a href={group.joined ? `/group/${group.id}` : 'javascript:void(0)'}>
-	<Card.Root class="transition-all {group.joined ? 'hover:bg-secondary' : 'cursor-default'}">
+<a href={group.pending === false ? `/group/${group.id}` : 'javascript:void(0)'}>
+	<Card.Root
+		class="transition-all {group.pending === false ? 'hover:bg-secondary' : 'cursor-default'}"
+	>
 		<Card.Header>
 			<div class="flex w-full justify-between">
 				<h2 class="font-semibold">{group.name}</h2>
 				<div>
-					{#if group.joined}
+					{#if group.pending === false}
 						<span class="text-sm font-bold text-green-500">Joined</span>
+					{:else if group.pending}
+						<span class="text-sm font-bold text-yellow-500">Requested</span>
 					{:else}
 						<Button
 							variant="outline"
