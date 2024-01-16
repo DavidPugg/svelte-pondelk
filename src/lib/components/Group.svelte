@@ -4,13 +4,12 @@
 	import type { Group } from '$lib/types/model.types';
 	import dayjs from 'dayjs';
 	import relativeTime from 'dayjs/plugin/relativeTime';
+	import { createEventDispatcher } from 'svelte';
 	dayjs.extend(relativeTime);
 
 	export let group: Group;
 
-	function requestInvite() {
-		console.log('request invite');
-	}
+	const dispatch = createEventDispatcher();
 </script>
 
 <a href={group.joined ? `/group/${group.id}` : 'javascript:void(0)'}>
@@ -22,7 +21,12 @@
 					{#if group.joined}
 						<span class="text-sm font-bold text-green-500">Joined</span>
 					{:else}
-						<Button variant="outline" size="sm" on:click={requestInvite}>Request invite</Button>
+						<Button
+							variant="outline"
+							size="sm"
+							on:click={() => dispatch('requestInvite', { groupId: group.id })}
+							>Request invite</Button
+						>
 					{/if}
 				</div>
 			</div>

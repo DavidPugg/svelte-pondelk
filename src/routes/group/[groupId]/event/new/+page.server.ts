@@ -28,16 +28,14 @@ export const actions = {
 					name: name as string,
 					location: location as string,
 					authorId: 1, //TODO: add auth user id,
-					groupId: +params.groupId,
-					createdAt: new Date()
+					groupId: +params.groupId
 				})
 				.returning({ insertedId: events.id });
 
 			await DB.insert(participations).values({
 				userId: 1, //TODO: add auth user id
 				eventId: insertedId,
-				verified: true,
-				createdAt: new Date()
+				verified: true
 			});
 
 			return { insertedId };

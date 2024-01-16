@@ -27,8 +27,7 @@ export const actions = {
 				.values({
 					name: name as string,
 					description: description as string,
-					authorId: 1, //TODO: add auth user id
-					createdAt: new Date()
+					authorId: 1 //TODO: add auth user id
 				})
 				.returning({ insertedId: groups.id });
 
@@ -36,11 +35,13 @@ export const actions = {
 				userId: 1, //TODO: add auth user id
 				groupId: insertedId,
 				pending: false,
-				createdAt: new Date()
+				invitedBy: 1 //TODO: add auth user id
 			});
 
 			return { insertedId };
 		} catch (e) {
+			console.log(e);
+
 			if (e instanceof Error) {
 				if (e.message.includes('UNIQUE constraint failed: groups.name')) {
 					errors['name'] = 'Group name already exists';

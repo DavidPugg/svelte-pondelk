@@ -1,5 +1,5 @@
-import { relations } from 'drizzle-orm';
-import { integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { relations, sql } from 'drizzle-orm';
+import { integer, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 
 export const users = sqliteTable(
 	'users',
@@ -7,11 +7,13 @@ export const users = sqliteTable(
 		id: integer('id').primaryKey(),
 		username: text('username').notNull(),
 		email: text('email').notNull(),
-		createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
+		createdAt: integer('created_at', { mode: 'timestamp_ms' })
+			.notNull()
+			.default(sql`CURRENT_TIMESTAMP`)
 	},
 	(table) => ({
-		usernameIdx: uniqueIndex('username_idx').on(table.username),
-		emailIdx: uniqueIndex('email_idx').on(table.email)
+		usernameIdx: unique().on(table.username),
+		emailIdx: unique().on(table.email)
 	})
 );
 
@@ -32,10 +34,12 @@ export const groups = sqliteTable(
 		name: text('name').notNull(),
 		description: text('description').notNull(),
 		authorId: integer('author_id').references(() => users.id),
-		createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
+		createdAt: integer('created_at', { mode: 'timestamp_ms' })
+			.notNull()
+			.default(sql`CURRENT_TIMESTAMP`)
 	},
 	(table) => ({
-		nameIdx: uniqueIndex('groups_name_idx').on(table.name)
+		nameIdx: unique().on(table.name)
 	})
 );
 
@@ -63,10 +67,12 @@ export const events = sqliteTable(
 		groupId: integer('group_id')
 			.references(() => groups.id, { onDelete: 'cascade' })
 			.notNull(),
-		createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
+		createdAt: integer('created_at', { mode: 'timestamp_ms' })
+			.notNull()
+			.default(sql`CURRENT_TIMESTAMP`)
 	},
 	(table) => ({
-		nameIdx: uniqueIndex('events_name_idx').on(table.name)
+		nameIdx: unique().on(table.name)
 	})
 );
 
@@ -98,10 +104,13 @@ export const memberships = sqliteTable(
 			.references(() => groups.id, { onDelete: 'cascade' })
 			.notNull(),
 		pending: integer('pending', { mode: 'boolean' }).notNull(),
-		createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
+		invitedBy: integer('invited_by').references(() => users.id),
+		createdAt: integer('created_at', { mode: 'timestamp_ms' })
+			.notNull()
+			.default(sql`CURRENT_TIMESTAMP`)
 	},
 	(table) => ({
-		userGroupIdx: uniqueIndex('user_group_idx').on(table.userId, table.groupId)
+		userGroupIdx: unique().on(table.userId, table.groupId)
 	})
 );
 
@@ -128,10 +137,12 @@ export const participations = sqliteTable(
 		userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }),
 		eventId: integer('event_id').references(() => events.id, { onDelete: 'cascade' }),
 		verified: integer('verified', { mode: 'boolean' }).notNull(),
-		createdAt: integer('created_at', { mode: 'timestamp' }).notNull()
+		createdAt: integer('created_at', { mode: 'timestamp_ms' })
+			.notNull()
+			.default(sql`CURRENT_TIMESTAMP`)
 	},
 	(table) => ({
-		userEventIdx: uniqueIndex('user_event_idx').on(table.userId, table.eventId)
+		userEventIdx: unique().on(table.userId, table.eventId)
 	})
 );
 

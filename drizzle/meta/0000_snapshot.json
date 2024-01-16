@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "016eaf3b-b7df-4b6e-9128-5f9c2985df6d",
+  "id": "aafe678d-e041-48ea-b3d9-0e9c94ba5d2f",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "events": {
@@ -47,12 +47,13 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
         }
       },
       "indexes": {
-        "events_name_idx": {
-          "name": "events_name_idx",
+        "events_name_unique": {
+          "name": "events_name_unique",
           "columns": [
             "name"
           ],
@@ -126,12 +127,13 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
         }
       },
       "indexes": {
-        "groups_name_idx": {
-          "name": "groups_name_idx",
+        "groups_name_unique": {
+          "name": "groups_name_unique",
           "columns": [
             "name"
           ],
@@ -187,17 +189,25 @@
           "notNull": true,
           "autoincrement": false
         },
+        "invited_by": {
+          "name": "invited_by",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
         }
       },
       "indexes": {
-        "user_group_idx": {
-          "name": "user_group_idx",
+        "memberships_user_id_group_id_unique": {
+          "name": "memberships_user_id_group_id_unique",
           "columns": [
             "user_id",
             "group_id"
@@ -230,6 +240,19 @@
             "id"
           ],
           "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "memberships_invited_by_users_id_fk": {
+          "name": "memberships_invited_by_users_id_fk",
+          "tableFrom": "memberships",
+          "tableTo": "users",
+          "columnsFrom": [
+            "invited_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
@@ -272,12 +295,13 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
         }
       },
       "indexes": {
-        "user_event_idx": {
-          "name": "user_event_idx",
+        "participations_user_id_event_id_unique": {
+          "name": "participations_user_id_event_id_unique",
           "columns": [
             "user_id",
             "event_id"
@@ -345,19 +369,20 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
         }
       },
       "indexes": {
-        "username_idx": {
-          "name": "username_idx",
+        "users_username_unique": {
+          "name": "users_username_unique",
           "columns": [
             "username"
           ],
           "isUnique": true
         },
-        "email_idx": {
-          "name": "email_idx",
+        "users_email_unique": {
+          "name": "users_email_unique",
           "columns": [
             "email"
           ],

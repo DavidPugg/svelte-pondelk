@@ -1,10 +1,36 @@
 <script lang="ts">
+	import { applyAction, enhance } from '$app/forms';
 	import Group from '$lib/components/Group.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import { PAGE_TITLE } from '$lib/utils/constants';
+	import type { ActionResult } from '@sveltejs/kit';
+	import toast from 'svelte-french-toast';
 	import type { PageServerData } from './$types';
 
 	export let data: PageServerData;
+
+	let submitButton: HTMLButtonElement;
+	let groupIdInput: HTMLInputElement;
+
+	let loading = false;
+
+	function submitRequestForm() {
+		if (loading) return;
+		loading = true;
+
+		return async ({ result, update }: { result: ActionResult; update: () => void }) => {
+			loading = false;
+
+			if (result.type === 'success') {
+				toast.success(result.data?.message);
+				return update();
+			} else if (result.type === 'failure') {
+				toast.error(result.data?.message);
+			}
+
+			applyAction(result);
+		};
+	}
 </script>
 
 <svelte:head>
@@ -22,11 +48,24 @@
 	</div>
 
 	{#if data?.groups}
-		<ul class="flex flex-col gap-4">
-			{#each data.groups as group}
-				<li><Group {group} /></li>
-			{/each}
-		</ul>
+		<form method="POST" action="?/request" use:enhance={submitRequestForm}>
+			<ul class="flex flex-col gap-4">
+				{#each data.groups as group}
+					<li>
+						<Group
+							on:requestInvite={() => {
+								groupIdInput.value = `${group.id}`;
+								submitButton.click();
+							}}
+							{group}
+						/>
+					</li>
+				{/each}
+			</ul>
+
+			<input bind:this={groupIdInput} type="hidden" name="group-id" />
+			<button bind:this={submitButton} type="submit" class="hidden" aria-hidden="true"></button>
+		</form>
 	{:else}
 		<p>No groups yet!</p>
 	{/if}

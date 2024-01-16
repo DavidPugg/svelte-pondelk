@@ -50,15 +50,10 @@ export const actions = {
 				return fail(401, { message: 'Unauthorized' });
 			}
 
-			await DB.update(participations)
-				.set({
-					verified: true
-				})
-				.where(
-					sql`${participations.userId} = ${+participantId} AND ${participations.eventId} = ${eventId}`
-				);
-
-			return { status: 'success' };
+			await DB.update(participations).set({ verified: true }).where(sql`
+							${participations.userId} = ${+participantId} 
+							AND
+							${participations.eventId} = ${eventId}`);
 		} catch (e) {
 			console.log(e);
 			return fail(400, { message: 'Error verifying participation' });
@@ -70,8 +65,7 @@ export const actions = {
 			await DB.insert(participations).values({
 				eventId: +params.eventId,
 				userId: 1, //TODO: add auth user
-				verified: false,
-				createdAt: new Date()
+				verified: false
 			});
 		} catch (e) {
 			if (e instanceof Error) {
