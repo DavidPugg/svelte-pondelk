@@ -3,7 +3,7 @@ import { DB } from '../../../db/db';
 import { groups, memberships } from '../../../db/schema';
 
 export const actions = {
-	create: async ({ request }) => {
+	create: async ({ request, locals }) => {
 		const data = await request.formData();
 		const name = data.get('name')?.toString();
 		const description = data.get('description')?.toString();
@@ -22,20 +22,26 @@ export const actions = {
 			return { errors };
 		}
 
+		const authUserId = locals.authData?.id;
+
+		if (!authUserId) {
+			return fail(401, { message: 'Unauthorized' });
+		}
+
 		try {
 			const [{ insertedId }] = await DB.insert(groups)
 				.values({
 					name: name as string,
 					description: description as string,
-					authorId: 1 //TODO: add auth user id
+					authorId: authUserId
 				})
 				.returning({ insertedId: groups.id });
 
 			await DB.insert(memberships).values({
-				userId: 1, //TODO: add auth user id
+				userId: authUserId,
 				groupId: insertedId,
 				pending: false,
-				invitedBy: 1 //TODO: add auth user id
+				invitedBy: authUserId
 			});
 
 			return { insertedId };

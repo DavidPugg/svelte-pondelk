@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import { SECRET_CLIENT_ID, SECRET_CLIENT_SECRET, SECRET_JWT_KEY } from '$env/static/private';
 import type { AuthData } from '$lib/types/auth.js';
 import { DB } from '../../db/db.js';
-import { users } from '../../db/schema.js';
+import { users, type NewUserDB } from '../../db/schema.js';
 
 export async function load({ url, cookies }) {
 	const redirectURL = 'http://localhost:5173/oauth';
@@ -28,22 +28,29 @@ export async function load({ url, cookies }) {
 
 		const payload = ticket.getPayload();
 
-		const appUser: AuthData = {
-			id: payload?.sub as string,
+		const appUser: NewUserDB = {
+			sub: payload?.sub as string,
+			authType: 'google',
 			username: `${payload?.name}`,
 			email: payload?.email as string,
 			picture: payload?.picture || null
 		};
 
-		const row = await DB.query.users.findFirst({
-			where: (users, { eq }) => eq(users.id, appUser.id)
+		let row = await DB.query.users.findFirst({
+			where: (users, { eq }) => eq(users.sub, appUser.sub) && eq(users.authType, appUser.authType)
 		});
 
 		if (!row) {
-			await DB.insert(users).values(appUser);
+			const [res] = await DB.insert(users).values(appUser).returning();
+			row = res;
 		}
 
-		const authData = !row ? appUser : row;
+		const authData: AuthData = {
+			id: row.id,
+			username: row.username,
+			email: row.email,
+			picture: row.picture
+		};
 
 		const token = jwt.sign(authData, SECRET_JWT_KEY, {
 			expiresIn: '7d'

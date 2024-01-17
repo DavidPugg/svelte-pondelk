@@ -3,7 +3,7 @@ import { eq, sql } from 'drizzle-orm';
 import { DB } from '../db/db';
 import { groups, memberships } from '../db/schema';
 
-export async function load() {
+export async function load({ locals }) {
 	try {
 		const res = await DB.select({
 			id: groups.id,
@@ -12,9 +12,9 @@ export async function load() {
 			createdAt: groups.createdAt,
 			authorId: groups.authorId,
 			pending:
-				sql<boolean>`(SELECT pending FROM memberships WHERE memberships.group_id = groups.id AND memberships.user_id = 1)`.mapWith(
+				sql<boolean>`(SELECT pending FROM memberships WHERE memberships.group_id = groups.id AND memberships.user_id = ${locals.authData?.id || 0})`.mapWith(
 					Boolean
-				), //TODO: add auth user id
+				),
 			members: sql<number>`COUNT(memberships.id)`
 		})
 			.from(groups)
@@ -29,7 +29,7 @@ export async function load() {
 }
 
 export const actions = {
-	request: async ({ request }) => {
+	request: async ({ request, locals }) => {
 		try {
 			const data = await request.formData();
 			const groupId = data.get('group-id');
@@ -46,11 +46,17 @@ export const actions = {
 				return fail(404, { message: 'Invalid group' });
 			}
 
+			const authUserId = locals.authData?.id;
+
+			if (!authUserId) {
+				return fail(401, { message: 'Unauthorized' });
+			}
+
 			await DB.insert(memberships).values({
-				userId: 1, //TODO: add auth user id
+				userId: authUserId,
 				groupId: +groupId,
 				pending: true,
-				invitedBy: 1 //TODO: add auth user id
+				invitedBy: authUserId
 			});
 
 			return { message: 'Request sent' };

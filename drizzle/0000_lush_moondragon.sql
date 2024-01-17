@@ -41,7 +41,9 @@ CREATE TABLE `participations` (
 );
 --> statement-breakpoint
 CREATE TABLE `users` (
-	`id` text PRIMARY KEY NOT NULL,
+	`id` integer PRIMARY KEY NOT NULL,
+	`sub` text NOT NULL,
+	`auth_type` text NOT NULL,
 	`username` text NOT NULL,
 	`email` text NOT NULL,
 	`picture` text,

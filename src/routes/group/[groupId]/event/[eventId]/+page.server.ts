@@ -31,7 +31,7 @@ export const actions = {
 		console.log('delete');
 	},
 
-	verify: async ({ request, params }) => {
+	verify: async ({ request, params, locals }) => {
 		try {
 			const data = await request.formData();
 			const participantId = data.get('id');
@@ -45,8 +45,7 @@ export const actions = {
 				where: (events, { eq }) => eq(events.id, eventId)
 			});
 
-			//TODO: add current auth user id
-			if (row?.authorId !== 1) {
+			if (row?.authorId !== locals.authData?.id) {
 				return fail(401, { message: 'Unauthorized' });
 			}
 
@@ -60,11 +59,17 @@ export const actions = {
 		}
 	},
 
-	participate: async ({ params }) => {
+	participate: async ({ params, locals }) => {
 		try {
+			const authUserId = locals.authData?.id;
+
+			if (!authUserId) {
+				return fail(401, { message: 'Unauthorized' });
+			}
+
 			await DB.insert(participations).values({
 				eventId: +params.eventId,
-				userId: 1, //TODO: add auth user
+				userId: authUserId,
 				verified: false
 			});
 		} catch (e) {

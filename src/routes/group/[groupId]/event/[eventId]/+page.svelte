@@ -6,6 +6,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import * as Table from '$lib/components/ui/table';
+	import { authData } from '$lib/stores/auth';
 	import { type ActionResult } from '@sveltejs/kit';
 	import toast from 'svelte-french-toast';
 	import type { PageServerData } from './$types';
@@ -129,9 +130,7 @@
 						<Table.Cell class="font-medium">{participation.user?.username}</Table.Cell>
 						{#if participation.verified}
 							<Table.Cell class="text-right font-semibold text-green-500">verified</Table.Cell>
-
-							<!-- TODO: fix admin after auth -->
-						{:else if true}
+						{:else if $authData?.id === data.event?.authorId}
 							<Table.Cell class="text-right ">
 								<form method="POST" action={`?/verify`} use:enhance={submitVerifyForm}>
 									<input type="text" name="id" value={participation.user?.id} class="hidden" />

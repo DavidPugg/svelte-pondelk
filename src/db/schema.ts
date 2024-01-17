@@ -4,7 +4,9 @@ import { integer, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 export const users = sqliteTable(
 	'users',
 	{
-		id: text('id').primaryKey(),
+		id: integer('id').primaryKey(),
+		sub: text('sub').notNull(),
+		authType: text('auth_type').notNull(),
 		username: text('username').notNull(),
 		email: text('email').notNull(),
 		picture: text('picture'),
@@ -92,7 +94,7 @@ export const eventRelations = relations(events, ({ one, many }) => ({
 export type NewEventDB = typeof events.$inferInsert;
 export type EventDB = typeof events.$inferSelect;
 
-// ----------------------- //
+// ----------------------- //`
 
 export const memberships = sqliteTable(
 	'memberships',

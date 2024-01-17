@@ -1,4 +1,4 @@
+import type { AuthData } from '$lib/types/auth';
 import { writable } from 'svelte/store';
-import type { UserDB } from '../../db/schema';
 
-export const authData = writable<Omit<UserDB, 'createdAt'> | null>(null);
+export const authData = writable<AuthData | null>(null);

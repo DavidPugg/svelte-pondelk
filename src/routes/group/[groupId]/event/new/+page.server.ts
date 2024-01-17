@@ -3,7 +3,7 @@ import { DB } from '../../../../../db/db';
 import { events, participations } from '../../../../../db/schema';
 
 export const actions = {
-	create: async ({ request, params }) => {
+	create: async ({ request, params, locals }) => {
 		const data = await request.formData();
 		const name = data.get('name')?.toString();
 		const location = data.get('location')?.toString();
@@ -22,18 +22,24 @@ export const actions = {
 			return { errors };
 		}
 
+		const authUserId = locals.authData?.id;
+
+		if (!authUserId) {
+			return fail(401, { message: 'Unauthorized' });
+		}
+
 		try {
 			const [{ insertedId }] = await DB.insert(events)
 				.values({
 					name: name as string,
 					location: location as string,
-					authorId: 1, //TODO: add auth user id,
+					authorId: authUserId,
 					groupId: +params.groupId
 				})
 				.returning({ insertedId: events.id });
 
 			await DB.insert(participations).values({
-				userId: 1, //TODO: add auth user id
+				userId: authUserId,
 				eventId: insertedId,
 				verified: true
 			});

@@ -7,6 +7,7 @@
 	import Event from '$lib/components/Event.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
+	import { authData } from '$lib/stores/auth';
 	import { deleteText, leaveText } from './confirm-dialog-text';
 
 	export let data: PageServerData;
@@ -35,15 +36,16 @@
 					<DropdownMenu.Item
 						><a href="/group/{data.group?.id}/event/new">Create event</a></DropdownMenu.Item
 					>
-					<!--TODO: fix after auth is added -->
 					<DropdownMenu.Item on:click={() => (openDialog = 'leave')}>
 						<span class="text-red-500">Leave group</span>
 					</DropdownMenu.Item>
 
-					<DropdownMenu.Item><span>Edit group</span></DropdownMenu.Item>
-					<DropdownMenu.Item on:click={() => (openDialog = 'delete')}
-						><span class="text-red-500">Delete group</span></DropdownMenu.Item
-					>
+					{#if $authData?.id === data.group?.authorId}
+						<DropdownMenu.Item><span>Edit group</span></DropdownMenu.Item>
+						<DropdownMenu.Item on:click={() => (openDialog = 'delete')}
+							><span class="text-red-500">Delete group</span></DropdownMenu.Item
+						>
+					{/if}
 				</DropdownMenu.Group>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
