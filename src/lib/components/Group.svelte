@@ -2,6 +2,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 	import type { Group } from '$lib/types/model.types';
+	import { getLocalTime } from '$lib/utils/time';
 	import dayjs from 'dayjs';
 	import relativeTime from 'dayjs/plugin/relativeTime';
 	import { createEventDispatcher } from 'svelte';
@@ -39,7 +40,7 @@
 		<Card.Footer>
 			<div class="flex w-full justify-between">
 				<p class="text-sm text-foreground/60">{group.members} members</p>
-				<p class="text-sm text-foreground/60">{dayjs(group.createdAt).fromNow()}</p>
+				<p class="text-sm text-foreground/60">{dayjs(getLocalTime(group.createdAt)).fromNow()}</p>
 			</div>
 		</Card.Footer>
 	</Card.Root>
