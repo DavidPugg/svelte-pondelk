@@ -1,13 +1,16 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { applyAction, enhance } from '$app/forms';
 	import { page } from '$app/stores';
 	import type { PageServerData } from './$types';
 
+	import { goto } from '$app/navigation';
 	import ConfirmDialog from '$lib/components/ConfirmDialog.svelte';
 	import Event from '$lib/components/Event.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 	import { authData } from '$lib/stores/auth';
+	import type { ActionResult } from '@sveltejs/kit';
+	import toast from 'svelte-french-toast';
 	import { deleteText, leaveText } from './confirm-dialog-text';
 
 	export let data: PageServerData;
@@ -18,6 +21,38 @@
 	let submitButton: HTMLButtonElement;
 
 	$: isAdmin = $authData?.id === data.group?.authorId;
+
+	function submitForm() {
+		const func = openDialog == 'delete' ? deleteForm() : leaveForm();
+		openDialog = null;
+		return func;
+	}
+
+	function deleteForm() {
+		return async ({ result }: { result: ActionResult }) => {
+			if (result.type === 'success') {
+				toast.success(result.data?.message);
+				return goto('/');
+			} else if (result.type === 'failure') {
+				toast.error(result.data?.message);
+			}
+
+			applyAction(result);
+		};
+	}
+
+	function leaveForm() {
+		return async ({ result }: { result: ActionResult }) => {
+			if (result.type === 'success') {
+				toast.success(result.data?.message);
+				return goto('/');
+			} else if (result.type === 'failure') {
+				toast.error(result.data?.message);
+			}
+
+			applyAction(result);
+		};
+	}
 </script>
 
 <svelte:head>
@@ -60,14 +95,7 @@
 
 	<p class="text-sm">{data.group?.description}</p>
 
-	<form
-		method="POST"
-		action={`?/${openDialog}`}
-		class="hidden"
-		use:enhance={() => {
-			openDialog = null;
-		}}
-	>
+	<form method="POST" action={`?/${openDialog}`} class="hidden" use:enhance={submitForm}>
 		<ConfirmDialog
 			open={!!openDialog}
 			on:close={() => (openDialog = null)}
