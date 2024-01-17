@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { authData } from '$lib/stores/auth';
 	import toast from 'svelte-french-toast';
+	import Profile from './Profile.svelte';
 	import Button from './ui/button/button.svelte';
 
 	async function logout() {
@@ -19,6 +20,9 @@
 			{#if $authData}
 				<li>
 					<Button variant="outline" on:click={logout}>Logout</Button>
+				</li>
+				<li>
+					<Profile username={$authData.username} avatar={$authData.picture ?? ''} />
 				</li>
 			{:else}
 				<li>
