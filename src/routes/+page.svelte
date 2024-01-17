@@ -61,6 +61,7 @@
 								submitButton.click();
 							}}
 							{group}
+							isAuthenticated={$authData !== null}
 						/>
 					</li>
 				{/each}

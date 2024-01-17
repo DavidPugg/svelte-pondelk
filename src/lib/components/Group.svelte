@@ -8,21 +8,22 @@
 	dayjs.extend(relativeTime);
 
 	export let group: Group;
+	export let isAuthenticated: boolean;
+
+	$: isGroupMember = group.pending === false && isAuthenticated;
 
 	const dispatch = createEventDispatcher();
 </script>
 
-<a href={group.pending === false ? `/group/${group.id}` : 'javascript:void(0)'}>
-	<Card.Root
-		class="transition-all {group.pending === false ? 'hover:bg-secondary' : 'cursor-default'}"
-	>
+<a href={isGroupMember ? `/group/${group.id}` : 'javascript:void(0)'}>
+	<Card.Root class="transition-all {isGroupMember ? 'hover:bg-secondary' : 'cursor-default'}">
 		<Card.Header>
 			<div class="flex w-full justify-between">
 				<h2 class="font-semibold">{group.name}</h2>
 				<div>
-					{#if group.pending === false}
+					{#if isGroupMember}
 						<span class="text-sm font-bold text-green-500">Joined</span>
-					{:else if group.pending}
+					{:else if group.pending && isAuthenticated}
 						<span class="text-sm font-bold text-yellow-500">Requested</span>
 					{:else}
 						<Button
