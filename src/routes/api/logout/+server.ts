@@ -1,4 +1,6 @@
-export function POST({ cookies }) {
+export function POST({ cookies, locals }) {
+	locals.requireAuth();
+
 	cookies.set('token', '', {
 		path: '/',
 		maxAge: 0,
@@ -6,5 +8,6 @@ export function POST({ cookies }) {
 		secure: true,
 		sameSite: 'strict'
 	});
+
 	return new Response('Success');
 }

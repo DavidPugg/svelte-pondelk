@@ -26,6 +26,9 @@
 
 	let loading = false;
 
+	$: isAdmin = $authData?.id === data.event?.authorId;
+	$: isParticipating = data.event?.participations?.some((p) => p.userId === $authData?.id);
+
 	function submitParticipationForm() {
 		if (loading) return;
 		loading = true;
@@ -67,18 +70,20 @@
 	<div class="mb-2 flex justify-between">
 		<h1 class="heading">{data.event?.name}</h1>
 
-		<DropdownMenu.Root>
-			<DropdownMenu.Trigger asChild let:builder>
-				<Button builders={[builder]} variant="outline">• • •</Button>
-			</DropdownMenu.Trigger>
-			<DropdownMenu.Content class="w-56">
-				<DropdownMenu.Group>
-					<DropdownMenu.Item on:click={() => (openDialog = true)}
-						><span class="text-red-500">Delete event</span></DropdownMenu.Item
-					>
-				</DropdownMenu.Group>
-			</DropdownMenu.Content>
-		</DropdownMenu.Root>
+		{#if isAdmin}
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger asChild let:builder>
+					<Button builders={[builder]} variant="outline">• • •</Button>
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Content class="w-56">
+					<DropdownMenu.Group>
+						<DropdownMenu.Item on:click={() => (openDialog = true)}
+							><span class="text-red-500">Delete event</span></DropdownMenu.Item
+						>
+					</DropdownMenu.Group>
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
+		{/if}
 	</div>
 
 	<p class="font-semibold text-gray-500">{data.event?.location}</p>
@@ -106,14 +111,16 @@
 </section>
 
 <section class="w-full sm:w-[30rem]">
-	<form method="POST" action="?/participate" use:enhance={submitParticipationForm}>
-		<Button disabled={loading} type="submit" class="mb-3 ml-auto block" variant="outline">
-			{#if loading}
-				<Spinner />
-			{/if}
-			Participate</Button
-		>
-	</form>
+	{#if !isParticipating}
+		<form method="POST" action="?/participate" use:enhance={submitParticipationForm}>
+			<Button disabled={loading} type="submit" class="mb-3 ml-auto block" variant="outline">
+				{#if loading}
+					<Spinner />
+				{/if}
+				Participate</Button
+			>
+		</form>
+	{/if}
 
 	<Table.Root>
 		<Table.Caption>A list of the event participations.</Table.Caption>

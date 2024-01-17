@@ -16,11 +16,13 @@
 	$: dialogText = openDialog === 'leave' ? leaveText : deleteText;
 
 	let submitButton: HTMLButtonElement;
+
+	$: isAdmin = $authData?.id === data.group?.authorId;
 </script>
 
 <svelte:head>
-	<title>Group - {$page.params.id} - Pondelk!</title>
-	<meta name="description" content="Page for group {$page.params.id}" />
+	<title>Group - {$page.params.groupId} - Pondelk!</title>
+	<meta name="description" content="Page for group {$page.params.groupId}" />
 </svelte:head>
 
 <section class="mb-4 w-full border-b-2 pb-4 sm:w-[30rem]">
@@ -32,16 +34,21 @@
 				<Button builders={[builder]} variant="outline">• • •</Button>
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content class="w-56">
-				<DropdownMenu.Group>
-					<DropdownMenu.Item
-						><a href="/group/{data.group?.id}/event/new">Create event</a></DropdownMenu.Item
+				<DropdownMenu.Group class="[&_div]:cursor-pointer">
+					<a href="/group/{data.group?.id}/event/new">
+						<DropdownMenu.Item>Create event</DropdownMenu.Item></a
 					>
+
+					{#if isAdmin}
+						<a href="/group/{data.group?.id}/edit">
+							<DropdownMenu.Item>Edit group</DropdownMenu.Item>
+						</a>
+					{/if}
 					<DropdownMenu.Item on:click={() => (openDialog = 'leave')}>
 						<span class="text-red-500">Leave group</span>
 					</DropdownMenu.Item>
 
-					{#if $authData?.id === data.group?.authorId}
-						<DropdownMenu.Item><span>Edit group</span></DropdownMenu.Item>
+					{#if isAdmin}
 						<DropdownMenu.Item on:click={() => (openDialog = 'delete')}
 							><span class="text-red-500">Delete group</span></DropdownMenu.Item
 						>
