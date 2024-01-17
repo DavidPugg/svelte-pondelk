@@ -9,6 +9,7 @@ import {
 	SECRET_OAUTH_REDIRECT_URI
 } from '$env/static/private';
 import type { AuthData } from '$lib/types/auth.js';
+import { sql } from 'drizzle-orm';
 import { DB } from '../../db/db.js';
 import { users, type NewUserDB, type UserDB } from '../../db/schema.js';
 
@@ -40,8 +41,7 @@ export async function load({ url, cookies }) {
 			sub: payload?.sub as string,
 			authType: 'google',
 			username: `${payload?.name}`,
-			email: payload?.email as string,
-			picture: payload?.picture || null
+			email: payload?.email as string
 		};
 
 		const row = await authenticate(appUser);
@@ -74,7 +74,7 @@ export async function load({ url, cookies }) {
 
 async function authenticate(appUser: NewUserDB): Promise<UserDB> {
 	const row = await DB.query.users.findFirst({
-		where: (users, { eq }) => eq(users.sub, appUser.sub) && eq(users.authType, appUser.authType)
+		where: sql`${users.sub} = ${appUser.sub} AND ${users.authType} = ${appUser.authType}`
 	});
 
 	if (row) {
