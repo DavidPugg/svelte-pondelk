@@ -2,13 +2,17 @@ import { redirect } from '@sveltejs/kit';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 
-import { SECRET_CLIENT_ID, SECRET_CLIENT_SECRET, SECRET_JWT_KEY } from '$env/static/private';
+import {
+	SECRET_CLIENT_ID,
+	SECRET_CLIENT_SECRET,
+	SECRET_JWT_KEY,
+	SECRET_OAUTH_REDIRECT_URI
+} from '$env/static/private';
 import type { AuthData } from '$lib/types/auth.js';
 import { DB } from '../../db/db.js';
-import { users, type NewUserDB } from '../../db/schema.js';
+import { users, type NewUserDB, type UserDB } from '../../db/schema.js';
 
 export async function load({ url, cookies }) {
-	const redirectURL = 'http://localhost:5173/oauth';
 	const code = url.searchParams.get('code') as string;
 
 	if (!code) {
@@ -16,7 +20,11 @@ export async function load({ url, cookies }) {
 	}
 
 	try {
-		const oAuth2Client = new OAuth2Client(SECRET_CLIENT_ID, SECRET_CLIENT_SECRET, redirectURL);
+		const oAuth2Client = new OAuth2Client(
+			SECRET_CLIENT_ID,
+			SECRET_CLIENT_SECRET,
+			SECRET_OAUTH_REDIRECT_URI
+		);
 		const r = await oAuth2Client.getToken(code);
 		oAuth2Client.setCredentials(r.tokens);
 		const user = oAuth2Client.credentials;
@@ -36,14 +44,7 @@ export async function load({ url, cookies }) {
 			picture: payload?.picture || null
 		};
 
-		let row = await DB.query.users.findFirst({
-			where: (users, { eq }) => eq(users.sub, appUser.sub) && eq(users.authType, appUser.authType)
-		});
-
-		if (!row) {
-			const [res] = await DB.insert(users).values(appUser).returning();
-			row = res;
-		}
+		const row = await authenticate(appUser);
 
 		const authData: AuthData = {
 			id: row.id,
@@ -69,4 +70,17 @@ export async function load({ url, cookies }) {
 		console.log('Error logging in with OAuth2 user', err);
 		throw redirect(303, '/oauth');
 	}
+}
+
+async function authenticate(appUser: NewUserDB): Promise<UserDB> {
+	const row = await DB.query.users.findFirst({
+		where: (users, { eq }) => eq(users.sub, appUser.sub) && eq(users.authType, appUser.authType)
+	});
+
+	if (row) {
+		return row;
+	}
+
+	const [res] = await DB.insert(users).values(appUser).returning();
+	return res;
 }
