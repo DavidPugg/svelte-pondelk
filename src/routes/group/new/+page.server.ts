@@ -46,10 +46,8 @@ export const actions = {
 
 			return { insertedId };
 		} catch (e) {
-			console.log(e);
-
 			if (e instanceof Error) {
-				if (e.message.includes('UNIQUE constraint failed: groups.name')) {
+				if (e.message.includes('UNIQUE')) {
 					errors['name'] = 'Group name already exists';
 				}
 			}

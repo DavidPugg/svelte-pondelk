@@ -50,7 +50,7 @@ CREATE TABLE `users` (
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `events_name_unique` ON `events` (`name`);--> statement-breakpoint
+CREATE UNIQUE INDEX `events_name_group_id_unique` ON `events` (`name`,`group_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `groups_name_unique` ON `groups` (`name`);--> statement-breakpoint
 CREATE UNIQUE INDEX `memberships_user_id_group_id_unique` ON `memberships` (`user_id`,`group_id`);--> statement-breakpoint
 CREATE UNIQUE INDEX `participations_user_id_event_id_unique` ON `participations` (`user_id`,`event_id`);--> statement-breakpoint

@@ -75,7 +75,7 @@ export const events = sqliteTable(
 			.default(sql`CURRENT_TIMESTAMP`)
 	},
 	(table) => ({
-		nameIdx: unique().on(table.name)
+		nameGroupIdx: unique().on(table.name, table.groupId)
 	})
 );
 

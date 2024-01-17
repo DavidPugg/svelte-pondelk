@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "9d1e8776-6b7b-4f91-8042-7e440ab8cc24",
+  "id": "f1b6038e-60f5-42fd-b251-fb8c5b8b6d40",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "events": {
@@ -52,10 +52,11 @@
         }
       },
       "indexes": {
-        "events_name_unique": {
-          "name": "events_name_unique",
+        "events_name_group_id_unique": {
+          "name": "events_name_group_id_unique",
           "columns": [
-            "name"
+            "name",
+            "group_id"
           ],
           "isUnique": true
         }

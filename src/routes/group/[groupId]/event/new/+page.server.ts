@@ -46,6 +46,12 @@ export const actions = {
 
 			return { insertedId };
 		} catch (e) {
+			if (e instanceof Error) {
+				if (e.message.includes('UNIQUE')) {
+					errors['name'] = 'Event name already exists';
+				}
+			}
+
 			return fail(400, { errors });
 		}
 	}
