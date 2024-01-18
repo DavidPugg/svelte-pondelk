@@ -36,6 +36,14 @@ export const actions = {
 						sql`${memberships.groupId} = ${+params.groupId} AND ${memberships.userId} = ${locals.authData.id}`
 					);
 
+				const group = await trx.query.groups.findFirst({
+					where: sql`${groups.id} = ${+params.groupId}`
+				});
+
+				if (group?.authorId !== locals.authData.id) {
+					return { message: 'Successfully left group' };
+				}
+
 				const row = await trx.query.memberships.findFirst({
 					where: sql`${memberships.groupId} = ${+params.groupId} AND ${memberships.pending} = false`,
 					orderBy: asc(memberships.createdAt)

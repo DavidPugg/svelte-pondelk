@@ -1,5 +1,5 @@
 import { error, fail } from '@sveltejs/kit';
-import { eq, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import { DB } from '../db/db';
 import { groups, memberships } from '../db/schema';
 
@@ -18,7 +18,10 @@ export async function load({ locals }) {
 			members: sql<number>`COUNT(memberships.id)`
 		})
 			.from(groups)
-			.leftJoin(memberships, eq(groups.id, memberships.groupId))
+			.leftJoin(
+				memberships,
+				sql`${memberships.groupId} = ${groups.id} AND ${memberships.pending} = FALSE`
+			)
 			.groupBy(groups.id);
 
 		return { groups: res };
