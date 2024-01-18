@@ -40,7 +40,7 @@
 </svelte:head>
 
 <section class="w-full sm:w-[30rem]">
-	<div class="mb-3 flex justify-between">
+	<div class="mb-6 flex justify-between border-b-2 pb-3">
 		<h1 class="heading">Groups</h1>
 
 		{#if $authData}
@@ -50,7 +50,7 @@
 		{/if}
 	</div>
 
-	{#if data?.groups}
+	{#if !!data?.groups.length}
 		<form method="POST" action="?/request" use:enhance={submitRequestForm}>
 			<ul class="flex flex-col gap-4">
 				{#each data.groups as group}
@@ -71,6 +71,6 @@
 			<button bind:this={submitButton} type="submit" class="hidden" aria-hidden="true"></button>
 		</form>
 	{:else}
-		<p>No groups yet!</p>
+		<div class="text-center text-lg font-semibold text-foreground/60">No groups yet!</div>
 	{/if}
 </section>

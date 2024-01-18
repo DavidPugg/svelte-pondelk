@@ -60,7 +60,7 @@
 	<meta name="description" content="Page for group {$page.params.groupId}" />
 </svelte:head>
 
-<section class="mb-4 w-full border-b-2 pb-4 sm:w-[30rem]">
+<section class="mb-6 w-full border-b-2 pb-3 sm:w-[30rem]">
 	<div class="mb-2 flex justify-between">
 		<h1 class="heading">{data.group?.name}</h1>
 
@@ -119,7 +119,7 @@
 				</li>
 			{/each}
 		{:else}
-			<p>No events yet!</p>
+			<div class="text-center text-lg font-semibold text-foreground/60">No events yet!</div>
 		{/if}
 	</ul>
 </section>
