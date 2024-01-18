@@ -7,7 +7,12 @@ export async function load({ params }) {
 	try {
 		const res = await DB.query.groups.findFirst({
 			where: (groups, { eq }) => eq(groups.id, +params.groupId),
-			with: { events: true }
+			with: {
+				events: true,
+				members: {
+					with: { user: true }
+				}
+			}
 		});
 
 		if (!res) {
