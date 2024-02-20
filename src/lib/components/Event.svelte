@@ -1,7 +1,6 @@
 <script lang="ts">
 	import * as Card from '$lib/components/ui/card';
 	import type { Event } from '$lib/types/model.types';
-	import { getLocalTime } from '$lib/utils/time';
 	import dayjs from 'dayjs';
 	import relativeTime from 'dayjs/plugin/relativeTime';
 	dayjs.extend(relativeTime);
@@ -20,7 +19,7 @@
 			<div class="flex w-full justify-between">
 				<p class="text-sm text-foreground/60">{event.location}</p>
 				<p class="text-sm text-foreground/60">
-					{dayjs(getLocalTime(event.createdAt)).fromNow()}
+					{dayjs(event.createdAt).fromNow()}
 				</p>
 			</div>
 		</Card.Footer>
