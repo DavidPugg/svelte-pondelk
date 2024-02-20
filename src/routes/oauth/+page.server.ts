@@ -2,12 +2,6 @@ import { redirect } from '@sveltejs/kit';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 
-import {
-	SECRET_CLIENT_ID,
-	SECRET_CLIENT_SECRET,
-	SECRET_JWT_KEY,
-	SECRET_OAUTH_REDIRECT_URI
-} from '$env/static/private';
 import type { AuthData } from '$lib/types/auth.js';
 import { sql } from 'drizzle-orm';
 import { DB } from '../../db/db.js';
@@ -22,9 +16,9 @@ export async function load({ url, cookies }) {
 
 	try {
 		const oAuth2Client = new OAuth2Client(
-			SECRET_CLIENT_ID,
-			SECRET_CLIENT_SECRET,
-			SECRET_OAUTH_REDIRECT_URI
+			process.env.CLIENT_ID,
+			process.env.CLIENT_SECRET,
+			process.env.OAUTH_REDIRECT_URI
 		);
 		const r = await oAuth2Client.getToken(code);
 		oAuth2Client.setCredentials(r.tokens);
@@ -32,7 +26,7 @@ export async function load({ url, cookies }) {
 
 		const ticket = await oAuth2Client.verifyIdToken({
 			idToken: user.id_token as string,
-			audience: SECRET_CLIENT_ID
+			audience: process.env.CLIENT_ID
 		});
 
 		const payload = ticket.getPayload();
@@ -53,7 +47,7 @@ export async function load({ url, cookies }) {
 			picture: row.picture
 		};
 
-		const token = jwt.sign(authData, SECRET_JWT_KEY, {
+		const token = jwt.sign(authData, process.env.JWT_KEY as string, {
 			expiresIn: '7d'
 		});
 

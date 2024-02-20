@@ -1,12 +1,13 @@
-import { SECRET_CLIENT_ID, SECRET_CLIENT_SECRET } from '$env/static/private';
 import { redirect } from '@sveltejs/kit';
 import { OAuth2Client } from 'google-auth-library';
 
 export const actions = {
 	OAuth2: async () => {
-		const redirectURL = 'http://localhost:5173/oauth';
-
-		const oAuth2Client = new OAuth2Client(SECRET_CLIENT_ID, SECRET_CLIENT_SECRET, redirectURL);
+		const oAuth2Client = new OAuth2Client(
+			process.env.CLIENT_ID,
+			process.env.CLIENT_SECRET,
+			process.env.OAUTH_REDIRECT_URI
+		);
 
 		const authorizeUrl = oAuth2Client.generateAuthUrl({
 			access_type: 'offline',
