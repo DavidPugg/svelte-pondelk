@@ -40,7 +40,7 @@ export async function load({ url, cookies }) {
 		const appUser: NewUserDB = {
 			sub: payload?.sub as string,
 			authType: 'google',
-			username: `${payload?.name}`,
+			username: `${payload?.email?.split('@')[0]}-${payload?.sub?.slice(0, 5)}`,
 			email: payload?.email as string
 		};
 
@@ -74,7 +74,7 @@ export async function load({ url, cookies }) {
 
 async function authenticate(appUser: NewUserDB): Promise<UserDB> {
 	const row = await DB.query.users.findFirst({
-		where: sql`${users.sub} = ${appUser.sub} AND ${users.authType} = ${appUser.authType}`
+		where: sql`(${users.sub} = ${appUser.sub} AND ${users.authType} = ${appUser.authType}) OR ${users.email} = ${appUser.email}`
 	});
 
 	if (row) {
