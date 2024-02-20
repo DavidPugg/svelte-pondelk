@@ -1,5 +1,7 @@
-import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
-import { connection, DB } from './db';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import { migrate } from 'drizzle-orm/postgres-js/migrator';
+import postgres from 'postgres';
+import { dbConnection } from './db';
 
-migrate(DB, { migrationsFolder: 'drizzle' });
-connection.close();
+const migrationClient = postgres(dbConnection);
+migrate(drizzle(migrationClient), { migrationsFolder: 'drizzle' });

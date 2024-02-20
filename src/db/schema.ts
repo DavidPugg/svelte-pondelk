@@ -1,18 +1,18 @@
 import { relations, sql } from 'drizzle-orm';
-import { integer, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
+import { boolean, integer, pgTable, serial, text, timestamp, unique } from 'drizzle-orm/pg-core';
 
-export const users = sqliteTable(
+export const users = pgTable(
 	'users',
 	{
-		id: integer('id').primaryKey(),
+		id: serial('id').primaryKey(),
 		sub: text('sub').notNull(),
 		authType: text('auth_type').notNull(),
 		username: text('username').notNull(),
 		email: text('email').notNull(),
 		picture: text('picture'),
-		createdAt: integer('created_at', { mode: 'timestamp_ms' })
+		createdAt: timestamp('created_at')
 			.notNull()
-			.default(sql`CURRENT_TIMESTAMP`)
+			.default(sql`now()`)
 	},
 	(table) => ({
 		usernameIdx: unique().on(table.username),
@@ -30,16 +30,16 @@ export type UserDB = typeof users.$inferSelect;
 
 // ----------------------- //
 
-export const groups = sqliteTable(
+export const groups = pgTable(
 	'groups',
 	{
-		id: integer('id').primaryKey(),
+		id: serial('id').primaryKey(),
 		name: text('name').notNull(),
 		description: text('description').notNull(),
 		authorId: integer('author_id').references(() => users.id),
-		createdAt: integer('created_at', { mode: 'timestamp_ms' })
+		createdAt: timestamp('created_at')
 			.notNull()
-			.default(sql`CURRENT_TIMESTAMP`)
+			.default(sql`now()`)
 	},
 	(table) => ({
 		nameIdx: unique().on(table.name)
@@ -60,19 +60,19 @@ export type GroupDB = typeof groups.$inferSelect;
 
 // ----------------------- //
 
-export const events = sqliteTable(
+export const events = pgTable(
 	'events',
 	{
-		id: integer('id').primaryKey(),
+		id: serial('id').primaryKey(),
 		name: text('name').notNull(),
 		location: text('location').notNull(),
 		authorId: integer('author_id').references(() => users.id),
 		groupId: integer('group_id')
 			.references(() => groups.id, { onDelete: 'cascade' })
 			.notNull(),
-		createdAt: integer('created_at', { mode: 'timestamp_ms' })
+		createdAt: timestamp('created_at')
 			.notNull()
-			.default(sql`CURRENT_TIMESTAMP`)
+			.default(sql`now()`)
 	},
 	(table) => ({
 		nameGroupIdx: unique().on(table.name, table.groupId)
@@ -96,21 +96,21 @@ export type EventDB = typeof events.$inferSelect;
 
 // ----------------------- //`
 
-export const memberships = sqliteTable(
+export const memberships = pgTable(
 	'memberships',
 	{
-		id: integer('id').primaryKey(),
+		id: serial('id').primaryKey(),
 		userId: integer('user_id')
 			.references(() => users.id, { onDelete: 'cascade' })
 			.notNull(),
 		groupId: integer('group_id')
 			.references(() => groups.id, { onDelete: 'cascade' })
 			.notNull(),
-		pending: integer('pending', { mode: 'boolean' }).notNull(),
+		pending: boolean('pending').notNull(),
 		invitedBy: integer('invited_by').references(() => users.id),
-		createdAt: integer('created_at', { mode: 'timestamp_ms' })
+		createdAt: timestamp('created_at')
 			.notNull()
-			.default(sql`CURRENT_TIMESTAMP`)
+			.default(sql`now()`)
 	},
 	(table) => ({
 		userGroupIdx: unique().on(table.userId, table.groupId)
@@ -133,16 +133,16 @@ export type MembershipDB = typeof memberships.$inferSelect;
 
 // ----------------------- //
 
-export const participations = sqliteTable(
+export const participations = pgTable(
 	'participations',
 	{
-		id: integer('id').primaryKey(),
+		id: serial('id').primaryKey(),
 		userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }),
 		eventId: integer('event_id').references(() => events.id, { onDelete: 'cascade' }),
-		verified: integer('verified', { mode: 'boolean' }).notNull(),
-		createdAt: integer('created_at', { mode: 'timestamp_ms' })
+		verified: boolean('verified').notNull(),
+		createdAt: timestamp('created_at')
 			.notNull()
-			.default(sql`CURRENT_TIMESTAMP`)
+			.default(sql`now()`)
 	},
 	(table) => ({
 		userEventIdx: unique().on(table.userId, table.eventId)

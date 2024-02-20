@@ -1,12 +1,12 @@
 {
   "version": "5",
-  "dialect": "sqlite",
+  "dialect": "pg",
   "entries": [
     {
       "idx": 0,
       "version": "5",
-      "when": 1705471419134,
-      "tag": "0000_tearful_morg",
+      "when": 1708437204151,
+      "tag": "0000_short_thor_girl",
       "breakpoints": true
     }
   ]
