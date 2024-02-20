@@ -1,11 +1,18 @@
-FROM node:18
+# Stage 1
+FROM node:18-alpine as builder
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+RUN npm install drizzle-orm postgres tsx dotenv
 
-RUN npm install
+# Stage 2
+FROM node:18-alpine as runner
 
-COPY . .
+WORKDIR /app
+
+COPY --from=builder /app/node_modules /app/node_modules
+COPY ./drizzle ./drizzle
+COPY ./src/db ./src/db
+COPY ./package.json ./
 
 CMD ["npm", "run", "migrate"]
